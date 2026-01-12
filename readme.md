@@ -30,13 +30,13 @@ SVreconDELLY("path/to/your/file.vcf", "your/output/folder/")
 ---
 
 ## What SVreconDELLY Does
-1. Processes only SVs with a `CONSENSUS` sequence in the `INFO` field and removes SVs marked as `IMPRECISE`.  
-2. Optionally filters SVs by `MinMAPQ` and `srMAPQ` (default `MinMAPQ = 0`).  
+1. Processes only SVs with a `CONSENSUS` sequence in the `INFO` field and removes SVs marked as `IMPRECISE`.  Retains only SVs with `FILTER == PASS`.
+2. Optionally filters SVs by `MinMAPQ` and `srMAPQ` in `INFO` field (default `MinMAPQ = 0`).  
 3. Reconstructs the predicted SV using breakpoints from the VCF and GRCh38 reference genome.  
 4. Inserts predicted breakpoint positions and homology regions (HOMSEQ) into the SV contig (`CONSENSUS` in `INFO`).  
    - Extracts breakpoint‑flanking sequences for mutspy → `SampleID_DELLYrecon_SVmutspy.txt`  
 5. Generates genomic donor‑site positions for WGS coverage analysis → `SampleID_DELLYrecon_DONOR.bed`  
-6. Produces 50‑bp breakpoint‑centered SV contigs for BLAST → `SampleID_DELLYrecon_SV50.fa`  
+6. Produces 50‑bp breakpoint‑centered SV contigs (with predicted homology) for downstream filtering, e.g. by pangenome BLAST as in Ellegaard et al. → `SampleID_DELLYrecon_SV50.fa`  
 
 ---
 
@@ -44,13 +44,13 @@ SVreconDELLY("path/to/your/file.vcf", "your/output/folder/")
 Using the VCF filename (without extension) as `SampleID`, the following files are produced:
 
 1. **`SampleID_DELLYrecon_SVmutspy.txt`**  
-   Contains SV reconstruction details and SV motifs for mutspy.
+   Contains information from SV reconstruction analysis, including SV motifs for mutspy.
 
 2. **`SampleID_DELLYrecon_DONOR.bed`**  
    BED file with donor genomic positions for WGS coverage analysis.
 
 3. **`SampleID_DELLYrecon_SV50.fa`**  
-   FASTA file with 50‑bp breakpoint‑centered SV contigs for BLAST.
+   FASTA file with 50‑bp breakpoint‑centered SV contigs for BLAST searches against reference genomes.
 
 ---
 
@@ -70,9 +70,9 @@ Using the VCF filename (without extension) as `SampleID`, the following files ar
 | 10 | `SVLEN` | SV length from VCF `INFO` |
 | 11 | `SV_length_estimate` | Approximate SV length (`Position2 - Position1`) |
 | 12 | `SV_CONTIG` | SV consensus sequence from VCF `INFO` |
-| 13 | `SV_CONTIG_w.Pred.BreakSite` | SV contig with predicted breakpoint `[ ]` and homology regions |
-| 14 | `Pred.Breakpoint_Quality` | Quality category: `"Good"`, `"Fair"`, `"Poor"` |
-| 15 | `SV_mutspy_input` | SV motif for mutspy analysis |
+| 13 | `SV_CONTIG_w.Pred.BreakSite` | SV contig with predicted breakpoint `[ ]` and predicted homology regions wihin `[ ]` |
+| 14 | `Pred.Breakpoint_Quality` | Quality category of predicted breakpoint within the SV contig: `"Good"`, `"Fair"`, `"Poor"` |
+| 15 | `SV_mutspy_input` | SV motif for mutspy analysis (as described in Ellegaard et al.) |
 
 ---
 
